@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="Sparks.Modules.Main.Views.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Sparks.Modules.Main.Views"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:vm="clr-namespace:Sparks.Modules.Main.ViewModels"
+             mc:Ignorable="d" 
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignWidth="1280"
+             d:DesignHeight="720"
+             d:DataContext="{d:DesignInstance vm:MainViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="9*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Image Source="{Binding Model.Frame}"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button Command="{Binding ChooseFileCommand}" Margin="20" Content="Файл"/>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20, 25, 20, 5">
+                    <TextBlock Text="Нижний порог для бинаризации"/>
+                </Viewbox>
+                <xctk:IntegerUpDown Grid.Row="1" Margin="20, 5, 20, 25" Value="{Binding Model.Floor}"/>
+            </Grid>
+            <Viewbox Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40">
+                <TextBlock Text="{Binding Model.SparksCount}"/>
+            </Viewbox>
+            <Viewbox Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40">
+                <TextBlock Text="{Binding Model.Conclusion}"/>
+            </Viewbox>
+        </Grid>
+    </Grid>
+</UserControl>
