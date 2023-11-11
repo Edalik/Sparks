@@ -11,39 +11,31 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignWidth="1280"
              d:DesignHeight="720"
-             d:DataContext="{d:DesignInstance vm:MainViewModel}">
-    <Grid>
+             d:DataContext="{d:DesignInstance vm:MainViewModel}"
+             Style="{StaticResource MaterialDesignUserControl}">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="9*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Image Source="{Binding Model.Frame}"/>
-        </Grid>
-        <Grid Grid.Row="1">
+
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Command="{Binding ChooseFileCommand}" Margin="20" Content="Файл"/>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20, 25, 20, 5">
-                    <TextBlock Text="Нижний порог для бинаризации"/>
-                </Viewbox>
-                <xctk:IntegerUpDown Grid.Row="1" Margin="20, 5, 20, 25" Value="{Binding Model.Floor}"/>
-            </Grid>
-            <Viewbox Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40">
-                <TextBlock Text="{Binding Model.SparksCount}"/>
-            </Viewbox>
-            <Viewbox Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40">
-                <TextBlock Text="{Binding Model.Conclusion}"/>
-            </Viewbox>
+
+            <Button Command="{Binding ChooseFileCommand}" Margin="10" Content="Файл"/>
+
+            <Label Grid.Column="1" VerticalAlignment="Center" Content="{Binding Model.SparksCount}" Margin="10"/>
+
+            <Label Grid.Column="2" VerticalAlignment="Center" Content="{Binding Model.Conclusion}" Margin="10"/>
+
         </Grid>
+
+        <Image Grid.Row="1" Source="{Binding Model.Frame}" Margin="10"/>
+
     </Grid>
 </UserControl>

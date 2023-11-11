@@ -23,49 +23,56 @@ internal class MainService : IMainService
         (
             async () =>
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                if (openFileDialog.ShowDialog() == false)
+                try
                 {
-                    return;
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    if (openFileDialog.ShowDialog() == false)
+                    {
+                        return;
+                    }
+                    VideoCapture videoCapture = new VideoCapture(openFileDialog.FileName);
+                    Mat mat = new Mat();
+                    int consecutiveFrames = 0;
+                    int fps = (int)videoCapture.Fps;
+                    for (int i = 0; i < videoCapture.FrameCount && !cancellationToken.IsCancellationRequested; i++)
+                    {
+                        videoCapture.Read(mat);
+                        List<YoloItem> yoloItems = yoloWrapper.Detect(mat.ToBytes().ToArray()).ToList<YoloItem>();
+                        foreach (YoloItem yoloItem in yoloItems)
+                        {
+                            if (yoloItem.Confidence > 0.75)
+                            {
+                                mat.Rectangle(new OpenCvSharp.Point(yoloItem.X, yoloItem.Y), new OpenCvSharp.Point(yoloItem.X + yoloItem.Width, yoloItem.Y + yoloItem.Height), Scalar.Green, 3);
+                                mat.PutText(Math.Round(yoloItem.Confidence, 2).ToString(), new OpenCvSharp.Point(yoloItem.X, yoloItem.Y), HersheyFonts.HersheySimplex, 2, Scalar.Green, 4);
+                            }
+                        }
+                        int x = 0;
+                        Mat matg = mat.Clone();
+                        Cv2.CvtColor(matg, matg, ColorConversionCodes.BGR2GRAY);
+                        Cv2.AdaptiveThreshold(matg, matg, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 21, -75);
+                        Cv2.FindContours(matg, out OpenCvSharp.Point[][] contours, out HierarchyIndex[] hierarchyIndexes, mode: RetrievalModes.List, method: ContourApproximationModes.ApproxNone);
+                        for (int j = 0; j < contours.Length; j++)
+                        {
+                            if (contours[j].Length < 2)
+                            {
+                                x++;
+                            }
+                        }
+                        mainModel.SparksCount = x.ToString();
+                        if (x >= 50)
+                            consecutiveFrames++;
+                        else
+                            consecutiveFrames = 0;
+                        mainModel.Conclusion = consecutiveFrames >= fps ? "Выпуск продут" : "Выпуск не продут";
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            mainModel.Frame = mat.ToBitmapSource();
+                        });
+                    }
                 }
-                VideoCapture videoCapture = new VideoCapture(openFileDialog.FileName);
-                Mat mat = new Mat();
-                int consecutiveFrames = 0;
-                int fps = (int)videoCapture.Fps;
-                for (int i = 0; i < videoCapture.FrameCount && !cancellationToken.IsCancellationRequested; i++)
+                catch (Exception ex)
                 {
-                    videoCapture.Read(mat);
-                    List<YoloItem> yoloItems = yoloWrapper.Detect(mat.ToBytes().ToArray()).ToList<YoloItem>();
-                    foreach (YoloItem yoloItem in yoloItems)
-                    {
-                        if (yoloItem.Confidence > 0.75)
-                        {
-                            mat.Rectangle(new OpenCvSharp.Point(yoloItem.X, yoloItem.Y), new OpenCvSharp.Point(yoloItem.X + yoloItem.Width, yoloItem.Y + yoloItem.Height), Scalar.Green, 3);
-                            mat.PutText(Math.Round(yoloItem.Confidence, 2).ToString(), new OpenCvSharp.Point(yoloItem.X, yoloItem.Y), HersheyFonts.HersheySimplex, 2, Scalar.Green, 4);
-                        }
-                    }
-                    int x = 0;
-                    Mat matg = mat.Clone();
-                    Cv2.CvtColor(matg, matg, ColorConversionCodes.BGR2GRAY);
-                    Cv2.Threshold(matg, matg, mainModel.Floor, 255, ThresholdTypes.Binary);
-                    Cv2.FindContours(matg, out OpenCvSharp.Point[][] contours, out HierarchyIndex[] hierarchyIndexes, mode: RetrievalModes.List, method: ContourApproximationModes.ApproxNone);
-                    for (int j = 0; j < contours.Length; j++)
-                    {
-                        if (contours[j].Length < 2)
-                        {
-                            x++;
-                        }
-                    }
-                    mainModel.SparksCount = x.ToString();
-                    if (x >= 50)
-                        consecutiveFrames++;
-                    else
-                        consecutiveFrames = 0;
-                    mainModel.Conclusion = consecutiveFrames >= fps ? "Выпуск продут" : "Выпуск не продут";
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        mainModel.Frame = mat.ToBitmapSource();
-                    });
+                    MessageBox.Show(ex.Message);
                 }
             }
         );

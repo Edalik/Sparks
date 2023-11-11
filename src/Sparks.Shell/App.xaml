@@ -5,6 +5,38 @@
     xmlns:local="clr-namespace:Sparks.Shell"
     xmlns:prism="http://prismlibrary.com/">
     <Application.Resources>
-         
+        <ResourceDictionary  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.GroupBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TabControl.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
+                <md:BundledTheme BaseTheme="Dark"
+                         ColorAdjustment="{md:ColorAdjustment}"
+                         PrimaryColor="LightBlue"
+                         SecondaryColor="Blue" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="MaterialDesignWindow" TargetType="{x:Type Window}">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="FontFamily" Value="{md:MaterialDesignFont}" />
+                <Setter Property="TextElement.FontWeight" Value="Regular" />
+                <Setter Property="TextElement.FontSize" Value="23" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
+            </Style>
+
+            <Style x:Key="MaterialDesignUserControl" TargetType="{x:Type UserControl}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="FontFamily" Value="{md:MaterialDesignFont}" />
+                <Setter Property="TextElement.FontWeight" Value="Regular" />
+                <Setter Property="TextElement.FontSize" Value="13" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
+            </Style>
+            
+        </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>
